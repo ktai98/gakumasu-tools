@@ -1,85 +1,53 @@
-<script setup lang="ts">
-import { RouterLink, RouterView } from 'vue-router'
-import HelloWorld from './components/HelloWorld.vue'
-</script>
-
 <template>
-  <header>
-    <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />
-
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-
-      <nav>
-        <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/about">About</RouterLink>
-      </nav>
-    </div>
-  </header>
-
-  <RouterView />
+  <div id="app">
+    <SiteHeader />
+    <main>
+      <router-view></router-view>
+    </main>
+    <SiteFooter />
+  </div>
 </template>
 
-<style scoped>
-header {
-  line-height: 1.5;
-  max-height: 100vh;
-}
+<script lang="ts">
+import { defineComponent } from 'vue';
+import SiteHeader from './components/SiteHeader.vue'; // 更新されたパス
+import SiteFooter from './components/SiteFooter.vue'; // 更新されたパス
 
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
-}
+export default defineComponent({
+  name: 'App',
+  components: {
+    SiteHeader, // 更新された名前
+    SiteFooter, // 更新された名前
+  },
+});
+</script>
 
-nav {
+<style>
+html, body {
+  margin: 0;
+  padding: 0;
   width: 100%;
-  font-size: 12px;
-  text-align: center;
-  margin-top: 2rem;
+  height: 100%;
 }
 
-nav a.router-link-exact-active {
-  color: var(--color-text);
+#app {
+  background-color: #fff; /* 背景色を白に設定 */
+  color: #333; /* テキストカラーを設定 */
+  min-height: 100vh; /* ビューポートの最小高さを100%に設定 */
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box; /* ボックスサイズを境界線を含めたサイズに設定 */
+  min-width: 100vw; /* ビューポートの幅を100%に設定 */
 }
 
-nav a.router-link-exact-active:hover {
-  background-color: transparent;
-}
-
-nav a {
-  display: inline-block;
-  padding: 0 1rem;
-  border-left: 1px solid var(--color-border);
-}
-
-nav a:first-of-type {
-  border: 0;
-}
-
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
-
-  .logo {
-    margin: 0 2rem 0 0;
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
-
-  nav {
-    text-align: left;
-    margin-left: -1rem;
-    font-size: 1rem;
-
-    padding: 1rem 0;
-    margin-top: 1rem;
-  }
+main {
+  padding-top: 70px; /* ヘッダーの高さ + マージン */
+  padding-bottom: 70px; /* フッターの高さ + マージン */
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 1200px; /* 中央のコンテンツの最大幅 */
+  width: 100%; /* 中央のコンテンツの幅を100%に設定 */
 }
 </style>
+
+
