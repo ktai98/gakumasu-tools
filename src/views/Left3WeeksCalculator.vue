@@ -3,53 +3,52 @@
     <h1>残り３週計算機</h1>
     <div class="input-section">
       <h2>残り３週</h2>
-      <form @submit.prevent="calculate">
+      <form @submit.prevent>
         <div class="input-row">
           <div class="input-group vo-group">
             <label for="vo">Voステータス:</label>
-            <input type="number" id="vo" v-model.number="status.vo" min="0" max="1500" required>
+            <input type="number" id="vo" v-model.number="status.vo" @input="calculate" min="0" max="1500" required>
           </div>
           <div class="input-group da-group">
             <label for="da">Daステータス:</label>
-            <input type="number" id="da" v-model.number="status.da" min="0" max="1500" required>
+            <input type="number" id="da" v-model.number="status.da" @input="calculate" min="0" max="1500" required>
           </div>
           <div class="input-group vi-group">
             <label for="vi">Viステータス:</label>
-            <input type="number" id="vi" v-model.number="status.vi" min="0" max="1500" required>
+            <input type="number" id="vi" v-model.number="status.vi" @input="calculate" min="0" max="1500" required>
           </div>
         </div>
         <div class="input-row">
           <div class="input-group vo-group">
             <label for="voBonus">Voレスボ (%):</label>
-            <input type="number" id="voBonus" v-model.number="bonus.vo" min="0.0" step="0.1" required>
+            <input type="number" id="voBonus" v-model.number="bonus.vo" @input="calculate" min="0.0" step="0.1" required>
           </div>
           <div class="input-group da-group">
             <label for="daBonus">Daレスボ (%):</label>
-            <input type="number" id="daBonus" v-model.number="bonus.da" min="0.0" step="0.1" required>
+            <input type="number" id="daBonus" v-model.number="bonus.da" @input="calculate" min="0.0" step="0.1" required>
           </div>
           <div class="input-group vi-group">
             <label for="viBonus">Viレスボ (%):</label>
-            <input type="number" id="viBonus" v-model.number="bonus.vi" min="0.0" step="0.1" required>
+            <input type="number" id="viBonus" v-model.number="bonus.vi" @input="calculate" min="0.0" step="0.1" required>
           </div>
         </div>
         <div class="input-row">
           <div class="input-group vo-group">
             <p>Voレッスンタイプ:</p>
-            <label><input type="radio" name="voLessonType" value="false" v-model="lessonType.vo" /> 通常レッスン</label>
-            <label><input type="radio" name="voLessonType" value="true" v-model="lessonType.vo" /> SPレッスン</label>
+            <label><input type="radio" name="voLessonType" value="false" v-model="lessonType.vo" @change="calculate" /> 通常レッスン</label>
+            <label><input type="radio" name="voLessonType" value="true" v-model="lessonType.vo" @change="calculate" /> SPレッスン</label>
           </div>
           <div class="input-group da-group">
             <p>Daレッスンタイプ:</p>
-            <label><input type="radio" name="daLessonType" value="false" v-model="lessonType.da" /> 通常レッスン</label>
-            <label><input type="radio" name="daLessonType" value="true" v-model="lessonType.da" /> SPレッスン</label>
+            <label><input type="radio" name="daLessonType" value="false" v-model="lessonType.da" @change="calculate" /> 通常レッスン</label>
+            <label><input type="radio" name="daLessonType" value="true" v-model="lessonType.da" @change="calculate" /> SPレッスン</label>
           </div>
           <div class="input-group vi-group">
             <p>Viレッスンタイプ:</p>
-            <label><input type="radio" name="viLessonType" value="false" v-model="lessonType.vi" /> 通常レッスン</label>
-            <label><input type="radio" name="viLessonType" value="true" v-model="lessonType.vi" /> SPレッスン</label>
+            <label><input type="radio" name="viLessonType" value="false" v-model="lessonType.vi" @change="calculate" /> 通常レッスン</label>
+            <label><input type="radio" name="viLessonType" value="true" v-model="lessonType.vi" @change="calculate" /> SPレッスン</label>
           </div>
         </div>
-        <button type="submit">計算する</button>
       </form>
     </div>
     <div class="results-section">
@@ -89,7 +88,6 @@ export default defineComponent({
       results.value.voLesson = calculate_lesson_growth('vo');
       results.value.daLesson = calculate_lesson_growth('da');
       results.value.viLesson = calculate_lesson_growth('vi');
-      console.log('成長後のステータス:', results.value);
     };
 
     function calculate_lesson_growth(attribute: 'vo' | 'da' | 'vi') {
@@ -108,15 +106,22 @@ export default defineComponent({
       return currentStatus + baseIncrease + bonusEffect;
     }
 
+    // 初期計算
+    calculate();
+
     return { status, bonus, lessonType, results, calculate };
   }
 });
 </script>
 
 <style scoped>
+body {
+  margin: 0;
+  padding: 0;
+}
+
 .calculator-container {
-  padding: 1em;
-  margin-top: 20px;
+  padding-top: 80px; /* ヘッダーの高さ分のパディングを追加 */
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -125,8 +130,8 @@ export default defineComponent({
 
 .input-section, .results-section {
   background-color: #ccffcc; /* 薄緑色 */
-  padding: 20px;
-  margin: 20px 0;
+  padding: 10px; /* パディングを調整 */
+  margin: 10px 0; /* マージンを調整 */
   border-radius: 8px;
   width: 100%; /* セクションの幅を100%に設定 */
   max-width: 600px; /* 最大幅を600pxに設定 */
@@ -139,7 +144,7 @@ export default defineComponent({
   display: flex;
   justify-content: space-around;
   width: 100%; /* 行の幅を100%に設定 */
-  margin-bottom: 1em;
+  margin-bottom: 0; /* マージンを削除 */
 }
 
 .input-group {
@@ -147,7 +152,7 @@ export default defineComponent({
   flex-direction: column;
   align-items: flex-start;
   width: 100%; /* グループの幅を100%に設定 */
-  padding: 10px; /* グループ内のパディングを追加 */
+  padding: 0; /* パディングを削除 */
 }
 
 .result-row p {
