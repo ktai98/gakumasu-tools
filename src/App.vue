@@ -28,16 +28,19 @@ html, body {
   padding: 0;
   width: 100%;
   height: 100%;
+  background-color: #fff; /* 背景色を白に設定 */
 }
 
 #app {
-  background-color: #fff; /* 背景色を白に設定 */
   color: #333; /* テキストカラーを設定 */
   min-height: 100vh; /* ビューポートの最小高さを100%に設定 */
   margin: 0;
   padding: 0;
   box-sizing: border-box; /* ボックスサイズを境界線を含めたサイズに設定 */
   min-width: 100vw; /* ビューポートの幅を100%に設定 */
+  height: 100vh;
+  width: 100vw; /* 中央のコンテンツの幅を100%に設定 */
+  display: flex;
 }
 
 main {
@@ -45,8 +48,7 @@ main {
   padding-bottom: 70px; /* フッターの高さ + マージン */
   margin-left: auto;
   margin-right: auto;
-  max-width: 1200px; /* 中央のコンテンツの最大幅 */
-  width: 100%; /* 中央のコンテンツの幅を100%に設定 */
+  max-width: 100vw; /* 中央のコンテンツの最大幅 */
 }
 </style>
 

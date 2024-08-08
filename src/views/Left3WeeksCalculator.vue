@@ -69,47 +69,53 @@
     <div class="results-section">
       <h2>追い込みレッスン後のステータス</h2>
       <div class="result-row vo-group">
-        <p>Vo→Vo:</p>
+        <p>Voレッスン→Vo追い込み:</p>
         <p>Vo: {{ results.voToVo.vo }}, Da: {{ results.voToVo.da }}, Vi: {{ results.voToVo.vi }}</p>
       </div>
       <div class="result-row da-group">
-        <p>Vo→Da:</p>
+        <p>Voレッスン→Da追い込み:</p>
         <p>Vo: {{ results.voToDa.vo }}, Da: {{ results.voToDa.da }}, Vi: {{ results.voToDa.vi }}</p>
       </div>
       <div class="result-row vi-group">
-        <p>Vo→Vi:</p>
+        <p>Voレッスン→Vi追い込み:</p>
         <p>Vo: {{ results.voToVi.vo }}, Da: {{ results.voToVi.da }}, Vi: {{ results.voToVi.vi }}</p>
       </div>
       <div class="result-row vo-group">
-        <p>Da→Vo:</p>
+        <p>Daレッスン→Vo追い込み:</p>
         <p>Vo: {{ results.daToVo.vo }}, Da: {{ results.daToVo.da }}, Vi: {{ results.daToVo.vi }}</p>
       </div>
       <div class="result-row da-group">
-        <p>Da→Da:</p>
+        <p>Daレッスン→Da追い込み:</p>
         <p>Vo: {{ results.daToDa.vo }}, Da: {{ results.daToDa.da }}, Vi: {{ results.daToDa.vi }}</p>
       </div>
       <div class="result-row vi-group">
-        <p>Da→Vi:</p>
+        <p>Daレッスン→Vi追い込み:</p>
         <p>Vo: {{ results.daToVi.vo }}, Da: {{ results.daToVi.da }}, Vi: {{ results.daToVi.vi }}</p>
       </div>
       <div class="result-row vo-group">
-        <p>Vi→Vo:</p>
+        <p>Viレッスン→Vo追い込み:</p>
         <p>Vo: {{ results.viToVo.vo }}, Da: {{ results.viToVo.da }}, Vi: {{ results.viToVo.vi }}</p>
       </div>
       <div class="result-row da-group">
-        <p>Vi→Da:</p>
+        <p>Viレッスン→Da追い込み:</p>
         <p>Vo: {{ results.viToDa.vo }}, Da: {{ results.viToDa.da }}, Vi: {{ results.viToDa.vi }}</p>
       </div>
       <div class="result-row vi-group">
-        <p>Vi→Vi:</p>
+        <p>Viレッスン→Vi追い込み:</p>
         <p>Vo: {{ results.viToVi.vo }}, Da: {{ results.viToVi.da }}, Vi: {{ results.viToVi.vi }}</p>
+      </div>
+    </div>
+    <div class="results-section">
+      <h2>ゲーム終了時のステータス合計値</h2>
+      <div v-for="(result, index) in sortedResults" :key="index" class="result-row">
+        <p>{{ result.label }}: {{ result.total }}</p>
       </div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
+import { defineComponent, ref, computed } from 'vue';
 
 export default defineComponent({
   name: 'Left3WeeksCalculator',
@@ -175,10 +181,33 @@ export default defineComponent({
       return finalStatus;
     }
 
+    function calculate_total(status: { vo: number, da: number, vi: number }): number {
+      const vo = Math.min(1500, status.vo + 30);
+      const da = Math.min(1500, status.da + 30);
+      const vi = Math.min(1500, status.vi + 30);
+      return vo + da + vi;
+    }
+
+    const sortedResults = computed(() => {
+      const resultArray = [
+        { label: 'Voレッスン→Vo追い込み', total: calculate_total(results.value.voToVo) },
+        { label: 'Voレッスン→Da追い込み', total: calculate_total(results.value.voToDa) },
+        { label: 'Voレッスン→Vi追い込み', total: calculate_total(results.value.voToVi) },
+        { label: 'Daレッスン→Vo追い込み', total: calculate_total(results.value.daToVo) },
+        { label: 'Daレッスン→Da追い込み', total: calculate_total(results.value.daToDa) },
+        { label: 'Daレッスン→Vi追い込み', total: calculate_total(results.value.daToVi) },
+        { label: 'Viレッスン→Vo追い込み', total: calculate_total(results.value.viToVo) },
+        { label: 'Viレッスン→Da追い込み', total: calculate_total(results.value.viToDa) },
+        { label: 'Viレッスン→Vi追い込み', total: calculate_total(results.value.viToVi) },
+      ];
+
+      return resultArray.sort((a, b) => b.total - a.total);
+    });
+
     // 初期計算
     calculate();
 
-    return { status, bonus, lessonType, results, calculate };
+    return { status, bonus, lessonType, results, calculate, sortedResults };
   }
 });
 </script>
@@ -190,11 +219,15 @@ body {
 }
 
 .calculator-container {
-  padding-top: 80px; /* ヘッダーの高さ分のパディングを追加 */
+  padding-top: 100px; /* ヘッダーの高さ分のパディングを追加 */
+  padding-bottom: 100px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 100%; /* コンテナーの幅を100%に設定 */
+  width: 100%;
+  height:auto;
+  min-height: 100vh; /* コンテナーの高さを100vhに設定 */
+  box-sizing: border-box;
 }
 
 .input-section, .results-section {
@@ -202,26 +235,29 @@ body {
   padding: 10px; /* パディングを調整 */
   margin: 10px 0; /* マージンを調整 */
   border-radius: 8px;
-  width: 100%; /* セクションの幅を100%に設定 */
+  width: 100%;
   max-width: 600px; /* 最大幅を600pxに設定 */
   display: flex; /* Flexboxを使用 */
   flex-direction: column; /* 子要素を縦に並べる */
   align-items: center; /* 子要素を中央揃え */
+  box-sizing: border-box;
 }
 
 .input-row, .result-row {
   display: flex;
   justify-content: space-around;
-  width: 100%; /* 行の幅を100%に設定 */
-  margin-bottom: 0; /* マージンを削除 */
+  width: 100%;
+  margin-bottom: 0;
+  box-sizing: border-box;
 }
 
 .input-group {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  width: 100%; /* グループの幅を100%に設定 */
-  padding: 0; /* パディングを削除 */
+  width: 100%;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 .result-row p {
@@ -242,7 +278,7 @@ body {
 }
 
 input[type="number"] {
-  width: 100%; /* 入力欄の幅を100%に設定 */
+  width: 100%;
   max-width: 200px; /* 入力欄の最大幅を200pxに制限 */
 }
 
