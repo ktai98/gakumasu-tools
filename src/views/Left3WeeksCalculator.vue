@@ -66,6 +66,45 @@
         <p>Vo: {{ results.viLesson.vo }}, Da: {{ results.viLesson.da }}, Vi: {{ results.viLesson.vi }}</p>
       </div>
     </div>
+    <div class="results-section">
+      <h2>追い込みレッスン後のステータス</h2>
+      <div class="result-row vo-group">
+        <p>Vo→Vo:</p>
+        <p>Vo: {{ results.voToVo.vo }}, Da: {{ results.voToVo.da }}, Vi: {{ results.voToVo.vi }}</p>
+      </div>
+      <div class="result-row da-group">
+        <p>Vo→Da:</p>
+        <p>Vo: {{ results.voToDa.vo }}, Da: {{ results.voToDa.da }}, Vi: {{ results.voToDa.vi }}</p>
+      </div>
+      <div class="result-row vi-group">
+        <p>Vo→Vi:</p>
+        <p>Vo: {{ results.voToVi.vo }}, Da: {{ results.voToVi.da }}, Vi: {{ results.voToVi.vi }}</p>
+      </div>
+      <div class="result-row vo-group">
+        <p>Da→Vo:</p>
+        <p>Vo: {{ results.daToVo.vo }}, Da: {{ results.daToVo.da }}, Vi: {{ results.daToVo.vi }}</p>
+      </div>
+      <div class="result-row da-group">
+        <p>Da→Da:</p>
+        <p>Vo: {{ results.daToDa.vo }}, Da: {{ results.daToDa.da }}, Vi: {{ results.daToDa.vi }}</p>
+      </div>
+      <div class="result-row vi-group">
+        <p>Da→Vi:</p>
+        <p>Vo: {{ results.daToVi.vo }}, Da: {{ results.daToVi.da }}, Vi: {{ results.daToVi.vi }}</p>
+      </div>
+      <div class="result-row vo-group">
+        <p>Vi→Vo:</p>
+        <p>Vo: {{ results.viToVo.vo }}, Da: {{ results.viToVo.da }}, Vi: {{ results.viToVo.vi }}</p>
+      </div>
+      <div class="result-row da-group">
+        <p>Vi→Da:</p>
+        <p>Vo: {{ results.viToDa.vo }}, Da: {{ results.viToDa.da }}, Vi: {{ results.viToDa.vi }}</p>
+      </div>
+      <div class="result-row vi-group">
+        <p>Vi→Vi:</p>
+        <p>Vo: {{ results.viToVi.vo }}, Da: {{ results.viToVi.da }}, Vi: {{ results.viToVi.vi }}</p>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -82,21 +121,42 @@ export default defineComponent({
       voLesson: { vo: 0, da: 0, vi: 0 },
       daLesson: { vo: 0, da: 0, vi: 0 },
       viLesson: { vo: 0, da: 0, vi: 0 },
+      voToVo: { vo: 0, da: 0, vi: 0 },
+      voToDa: { vo: 0, da: 0, vi: 0 },
+      voToVi: { vo: 0, da: 0, vi: 0 },
+      daToVo: { vo: 0, da: 0, vi: 0 },
+      daToDa: { vo: 0, da: 0, vi: 0 },
+      daToVi: { vo: 0, da: 0, vi: 0 },
+      viToVo: { vo: 0, da: 0, vi: 0 },
+      viToDa: { vo: 0, da: 0, vi: 0 },
+      viToVi: { vo: 0, da: 0, vi: 0 },
     });
 
     const calculate = () => {
       results.value.voLesson = calculate_lesson_growth('vo');
       results.value.daLesson = calculate_lesson_growth('da');
       results.value.viLesson = calculate_lesson_growth('vi');
+
+      results.value.voToVo = calculate_final_growth(results.value.voLesson, 'vo');
+      results.value.voToDa = calculate_final_growth(results.value.voLesson, 'da');
+      results.value.voToVi = calculate_final_growth(results.value.voLesson, 'vi');
+
+      results.value.daToVo = calculate_final_growth(results.value.daLesson, 'vo');
+      results.value.daToDa = calculate_final_growth(results.value.daLesson, 'da');
+      results.value.daToVi = calculate_final_growth(results.value.daLesson, 'vi');
+
+      results.value.viToVo = calculate_final_growth(results.value.viLesson, 'vo');
+      results.value.viToDa = calculate_final_growth(results.value.viLesson, 'da');
+      results.value.viToVi = calculate_final_growth(results.value.viLesson, 'vi');
     };
 
     function calculate_lesson_growth(attribute: 'vo' | 'da' | 'vi') {
       const newStatus = { ...status.value };
-      newStatus[attribute] = calculate_growth(
+      newStatus[attribute] = Math.floor(calculate_growth(
         status.value[attribute],
         bonus.value[attribute],
         lessonType.value[attribute] === 'true'
-      );
+      ));
       return newStatus;
     }
 
@@ -104,6 +164,15 @@ export default defineComponent({
       const baseIncrease = isSP ? 220 : 110; // SPレッスンで220, 通常レッスンで110
       const bonusEffect = baseIncrease * (lessonBonus / 100);
       return currentStatus + baseIncrease + bonusEffect;
+    }
+
+    function calculate_final_growth(currentStatus: { vo: number, da: number, vi: number }, focus: 'vo' | 'da' | 'vi') {
+      const finalStatus = { ...currentStatus };
+      finalStatus[focus] = Math.floor(finalStatus[focus] + 310 + (310 * (bonus.value[focus] / 100)));
+      if (focus !== 'vo') finalStatus.vo = Math.floor(finalStatus.vo + 145 + (145 * (bonus.value.vo / 100)));
+      if (focus !== 'da') finalStatus.da = Math.floor(finalStatus.da + 145 + (145 * (bonus.value.da / 100)));
+      if (focus !== 'vi') finalStatus.vi = Math.floor(finalStatus.vi + 145 + (145 * (bonus.value.vi / 100)));
+      return finalStatus;
     }
 
     // 初期計算
