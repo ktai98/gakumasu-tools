@@ -2,7 +2,7 @@
   <div class="calculator-container">
     <h1>残り３週計算機</h1>
     <div class="input-section">
-      <h2>残り３週</h2>
+      <h2>最終まで３週</h2>
       <form @submit.prevent>
         <div class="input-row">
           <div class="input-group vo-group">
@@ -52,7 +52,7 @@
       </form>
     </div>
     <div class="results-section">
-      <h2>成長後のステータス</h2>
+      <h2>最後のレッスン後のステータス</h2>
       <div class="result-row vo-group">
         <p>Voレッスン選択時:</p>
         <p>Vo: {{ results.voLesson.vo }}, Da: {{ results.voLesson.da }}, Vi: {{ results.voLesson.vi }}</p>
@@ -106,7 +106,7 @@
       </div>
     </div>
     <div class="results-section">
-      <h2>ゲーム終了時のステータス合計値</h2>
+      <h2>ゲーム終了時のステータス合計値（高い順）</h2>
       <div v-for="(result, index) in sortedResults" :key="index" class="result-row">
         <p>{{ result.label }}: {{ result.total }}</p>
       </div>
